@@ -109,8 +109,8 @@ const SFX_FILES: Record<SfxName, string> = {
     sfx_button: 'assets/audio/sfx_button.mp3',
     sfx_win: 'assets/audio/sfx_win.mp3',
     sfx_gameover: 'assets/audio/sfx_gameover.mp3',
-    sfx_step: 'assets/audio/sfx_jump.mp3',
-    sfx_event: 'assets/audio/sfx_collect.mp3',
+    sfx_step: 'assets/audio/sfx_step.mp3',
+    sfx_event: 'assets/audio/sfx_event.mp3',
 };
 
 // ---------------------------------------------------------------------------
@@ -138,15 +138,24 @@ export class Game extends Scene {
     }
 
     preload() {
+        // Handle missing assets gracefully
+        this.load.on('loaderror', (file: any) => {
+            console.warn(`Failed to load asset: ${file.key}, will use fallback`);
+        });
+
         // Universal audio. All files exist under public/assets/audio/.
         (Object.keys(SFX_FILES) as SfxName[]).forEach((name) => {
             this.load.audio(name, SFX_FILES[name]);
         });
+        // Load FX textures - will generate fallbacks if files don't exist
         this.load.image('fx_glow', 'assets/fx/glow.png');
         this.load.image('fx_star', 'assets/fx/star.png');
     }
 
     create() {
+        // Generate fallback textures if assets failed to load
+        this.generateFallbackTextures();
+        
         this.drawSky();
         this.drawHorizon();
         this.drawTerrain();
@@ -185,6 +194,37 @@ export class Game extends Scene {
     }
 
     // -- visual fabrication -------------------------------------------------
+
+    private generateFallbackTextures() {
+        // Generate fallback glow texture if asset failed to load
+        if (!this.textures.exists('fx_glow')) {
+            const g = this.add.graphics();
+            g.fillStyle(0xffffff, 1);
+            g.fillCircle(16, 16, 16);
+            g.generateTexture('fx_glow', 32, 32);
+            g.destroy();
+        }
+        
+        // Generate fallback star texture if asset failed to load
+        if (!this.textures.exists('fx_star')) {
+            const g = this.add.graphics();
+            g.fillStyle(0xffffff, 1);
+            // Simple 4-point star
+            g.beginPath();
+            g.moveTo(16, 0);
+            g.lineTo(20, 12);
+            g.lineTo(32, 16);
+            g.lineTo(20, 20);
+            g.lineTo(16, 32);
+            g.lineTo(12, 20);
+            g.lineTo(0, 16);
+            g.lineTo(12, 12);
+            g.closePath();
+            g.fillPath();
+            g.generateTexture('fx_star', 32, 32);
+            g.destroy();
+        }
+    }
 
     private drawSky() {
         const g = this.add.graphics();
@@ -342,7 +382,9 @@ export class Game extends Scene {
     // -- event handlers from React ------------------------------------------
 
     private handleStartJourney() {
-        this.sound.play('sfx_button', { volume: 0.8 });
+        if (this.sound.get('sfx_button')) {
+            this.sound.play('sfx_button', { volume: 0.8 });
+        }
         this.tweens.timeScale = 1;
     }
 
@@ -381,7 +423,9 @@ export class Game extends Scene {
     private handlePlaySfx(s: { sound: SfxName }) {
         const key = s?.sound as SfxName;
         const file = SFX_FILES[key];
-        if (file) this.sound.play(key, { volume: 0.9 });
+        if (file && this.sound.get(key)) {
+            this.sound.play(key, { volume: 0.9 });
+        }
     }
 
     // Pause/resume helpers (called via React through the pattern in the
@@ -424,7 +468,7 @@ function StartGame(parent: string) {
         width: GAME_WIDTH,
         height: GAME_HEIGHT,
         parent,
-        backgroundColor: '#2b1d14',
+        backgroundColor: 'transparent',
         scale: {
             mode: Scale.FIT,
             autoCenter: Scale.CENTER_BOTH,
