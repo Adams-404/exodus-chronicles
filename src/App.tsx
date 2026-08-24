@@ -756,7 +756,10 @@ function PlayingHud(props: HudProps) {
                 {family.map((m) => (
                     <div key={m.id} className={`fam-token ${m.status}`}>
                         <span className="fam-avatar">{m.short}</span>
-                        <span className="fam-name">{m.name}</span>
+                        <div className="fam-info">
+                            <span className="fam-name">{m.name}</span>
+                            <span className="fam-role">{m.role}</span>
+                        </div>
                     </div>
                 ))}
             </div>

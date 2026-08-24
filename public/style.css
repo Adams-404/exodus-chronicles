@@ -19,18 +19,22 @@
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; height: 100%; width: 100%; }
 html {
-    background: radial-gradient(120% 90% at 50% 0%, #2b1d14 0%, #151a20 60%, #0c0f14 100%);
-    background-attachment: fixed;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
     min-height: 100vh;
+    width: 100vw;
+    overflow-x: hidden;
 }
 body {
     color: var(--parchment);
     font-family: Georgia, 'Palatino Linotype', 'Times New Roman', serif;
     -webkit-tap-highlight-color: transparent;
     overscroll-behavior: none;
+    background: radial-gradient(120% 90% at 50% 0%, #2b1d14 0%, #151a20 60%, #0c0f14 100%);
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    width: 100vw;
 }
 
 #app {
@@ -42,17 +46,20 @@ body {
     justify-content: center;
     align-items: center;
     position: relative;
+    background: transparent;
 }
 
 #game-container {
     width: 100%;
     height: 100%;
     position: relative;
+    background: transparent;
 }
 #game-container canvas {
     display: block;
     border-radius: 14px;
     box-shadow: 0 18px 50px rgba(0,0,0,0.55);
+    background: transparent;
 }
 
 #hud {
@@ -310,6 +317,9 @@ h1, h2, h3 { margin: 0; line-height: 1.1; }
 }
 .result-lines li:last-child { border-bottom: none; }
 .continue-btn { margin-top: 12px; }
+/* ---------- family token roles & layout ---------- */
+.fam-info { display: flex; flex-direction: column; }
+.fam-role { display: none; font-size: 10px; color: var(--gold); }
 
 /* ---------- end screens ---------- */
 .overlay.end { background: rgba(10,12,16,0.68); }
@@ -337,4 +347,254 @@ h1, h2, h3 { margin: 0; line-height: 1.1; }
     .game-title { font-size: 38px; }
     .event-text { font-size: 13.5px; }
     .choice-hint { font-size: 12px; }
+}
+
+/* =========================================================================
+   DESKTOP & WIDESCREEN RESPONSIVE ENHANCEMENTS
+   ========================================================================= */
+@media (min-width: 768px) {
+    body {
+        background:
+            radial-gradient(ellipse at 50% 25%, rgba(179, 107, 60, 0.28) 0%, rgba(43, 29, 20, 0.7) 45%, rgba(12, 15, 20, 0.96) 100%),
+            radial-gradient(circle at 15% 75%, rgba(217, 125, 67, 0.18) 0%, transparent 45%),
+            radial-gradient(circle at 85% 75%, rgba(246, 173, 85, 0.12) 0%, transparent 45%),
+            #0c0f14;
+        background-attachment: fixed;
+    }
+
+    /* Ambient atmospheric side lighting on desktop */
+    #app::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background:
+            radial-gradient(circle at 50% 0%, rgba(250, 240, 137, 0.08), transparent 60%),
+            radial-gradient(circle at 50% 100%, rgba(217, 125, 67, 0.12), transparent 50%);
+        z-index: 1;
+    }
+
+    #game-container canvas {
+        border-radius: 20px;
+        border: 1px solid rgba(246, 173, 85, 0.3);
+        box-shadow:
+            0 0 60px rgba(217, 125, 67, 0.22),
+            0 25px 80px rgba(0, 0, 0, 0.85);
+    }
+
+    .overlay {
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        padding: 32px 24px;
+    }
+
+    .overlay.menu {
+        justify-content: center;
+    }
+
+    .menu-scroll {
+        max-width: 840px;
+        margin-top: 0;
+        padding: 36px 32px;
+        background: rgba(15, 18, 24, 0.75);
+        border-radius: 28px;
+        border: 1px solid rgba(246, 173, 85, 0.25);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+    }
+
+    .game-title {
+        font-size: 58px;
+        letter-spacing: 4px;
+    }
+
+    .game-tagline {
+        font-size: 18px;
+        max-width: 660px;
+        margin: 16px auto 30px;
+        line-height: 1.65;
+    }
+
+    .difficulty-row {
+        flex-direction: row;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin-bottom: 28px;
+    }
+
+    .diff-card {
+        padding: 20px 16px;
+        min-height: 135px;
+        justify-content: center;
+        gap: 6px;
+        border-radius: 20px;
+    }
+
+    .diff-name {
+        font-size: 21px;
+    }
+
+    .diff-days {
+        font-size: 14px;
+    }
+
+    .diff-desc {
+        font-size: 13.5px;
+        line-height: 1.4;
+    }
+
+    .primary-btn.begin {
+        max-width: 440px;
+        margin: 20px auto;
+        font-size: 22px;
+        min-height: 64px;
+    }
+
+    /* Desktop HUD Layout */
+    .hud {
+        max-width: 920px;
+        margin: 0 auto;
+        padding: 20px 24px 24px;
+        justify-content: space-between;
+    }
+
+    .res-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+    }
+
+    .gauge {
+        padding: 10px 14px 11px;
+        border-radius: 14px;
+        background: rgba(20, 24, 31, 0.88);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+
+    .gauge-name {
+        font-size: 13.5px;
+    }
+
+    .gauge-val {
+        font-size: 17px;
+    }
+
+    .gauge-track {
+        height: 8px;
+    }
+
+    .family-bar {
+        gap: 12px;
+    }
+
+    .fam-token {
+        flex-direction: row;
+        padding: 8px 14px;
+        gap: 12px;
+        border-radius: 16px;
+        background: rgba(20, 24, 31, 0.88);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        align-items: center;
+    }
+
+    .fam-avatar {
+        width: 42px;
+        height: 42px;
+        font-size: 14px;
+    }
+
+    .fam-info {
+        align-items: flex-start;
+        text-align: left;
+    }
+
+    .fam-name {
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .fam-role {
+        display: block;
+        font-size: 11px;
+        color: var(--gold);
+        margin-top: 1px;
+    }
+
+    .event-card, .result-card {
+        max-width: 860px;
+        width: 100%;
+        margin: 0 auto;
+        padding: 26px 30px;
+        border-radius: 24px;
+        background: rgba(20, 24, 31, 0.94);
+        border-color: rgba(246, 173, 85, 0.45);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+    }
+
+    .event-title {
+        font-size: 26px;
+        margin-bottom: 10px;
+    }
+
+    .event-text {
+        font-size: 16px;
+        line-height: 1.6;
+        margin-bottom: 18px;
+    }
+
+    .choice-list {
+        gap: 12px;
+    }
+
+    .choice-btn {
+        min-height: 68px;
+        padding: 14px 18px;
+        border-radius: 16px;
+        gap: 16px;
+    }
+
+    .choice-num {
+        flex: 0 0 38px;
+        height: 38px;
+        font-size: 16px;
+    }
+
+    .choice-label {
+        font-size: 17.5px;
+    }
+
+    .choice-hint {
+        font-size: 14px;
+    }
+
+    .panel {
+        max-width: 640px;
+        padding: 36px 32px;
+        border-radius: 24px;
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+    }
+
+    .end-emoji {
+        font-size: 54px;
+    }
+
+    .end-title {
+        font-size: 32px;
+    }
+
+    .end-msg {
+        font-size: 16.5px;
+        line-height: 1.6;
+    }
+
+    .journey-log {
+        font-size: 14px;
+        padding: 16px;
+    }
 }
